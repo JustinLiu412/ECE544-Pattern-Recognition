@@ -5,7 +5,7 @@
 
 import numpy as np
 import random
-import os
+
 
 
 # In[142]:
@@ -137,10 +137,18 @@ def compute_mse(dev_data, dev_label, w, b):
     
     return mse
 
-
+def compute_acc(data, label, w, b):
+    """accuracy
+    
+    """
+    
+    acc = 0
+    for i in range(len(label)):
+        if label[i] == round(np.dot(w, data[i]) + b):
+            acc += 1
+    return acc / float(len(label))
 # In[157]:
-
-def activate(epoch = 100, lr = 0.000001):
+def activate(epoch = 300, lr = 0.000001):
     """
     
     """
@@ -153,14 +161,13 @@ def activate(epoch = 100, lr = 0.000001):
     dev_data, dev_label = get_data('dev')
     
     for i in range(epoch):    
-        g_w, g_b = linear_regression_gradient(data, label, w, b)
+        g_w, g_b = linear_regression_gradient(train_data, train_label, w, b)
         w, b = gradient_descent(w, b, lr, g_w, g_b)
     
         mse = compute_mse(dev_data, dev_label, w, b)
-    
-        print mse
-
-
+        acc = compute_acc(dev_data, dev_label, w, b)
+        
+        print("epoch %d, loss: %f, error rate: %s " % (i, mse, 1 - acc))
 # In[158]:
 
 activate()
