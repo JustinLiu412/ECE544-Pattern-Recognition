@@ -78,11 +78,25 @@ def shuffle(data_set, label_set):
     shuffled_label = np.zeros((len(label_set)))
     idx = np.array(xrange(len(label_set)))
     random.shuffle(idx)
+<<<<<<< Updated upstream
+=======
+<<<<<<< Updated upstream
+    # i = 0
+    # for j in idx:
+    #     shuffled_data[i] = data_set[int(j)]
+    #     shuffled_label[i] = label_set[int(j)]
+    #     i += 1
+=======
+>>>>>>> Stashed changes
     i = 0
     for j in idx:
         shuffled_data[i] = data_set[int(j)]
         shuffled_label[i] = label_set[int(j)]
         i += 1
+<<<<<<< Updated upstream
+=======
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
     
     return shuffled_data, shuffled_label
 
@@ -92,6 +106,7 @@ def shuffle(data_set, label_set):
 
 # In[58]:
 
+<<<<<<< Updated upstream
 def linear_node_gradient(data, label, weight, b):
     """Calculate the gradient of linear node classifier. Return the gradient.
     
@@ -99,6 +114,23 @@ def linear_node_gradient(data, label, weight, b):
     
     gradient_w, gradient_b = 0, 0    
     
+=======
+<<<<<<< Updated upstream
+def linear_node_gradient(data, label, weight, b, gradient_w, gradient_b):
+    """Calculate the gradient of linear node classifier. Return the gradient.
+    
+    """
+
+=======
+def linear_node_gradient(data, label, weight, b):
+    """Calculate the gradient of linear node classifier. Return the gradient.
+    
+    """
+    
+    gradient_w, gradient_b = 0, 0    
+    
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
     for i in range(len(label)):
         gradient_w += (-2) * (label[i] - (np.dot(weight, data[i]) + b)) * data[i]
         gradient_b += (-2) * (label[i] - (np.dot(weight, data[i]) + b))
@@ -153,6 +185,34 @@ def compute_MSE(data, label, weight, b, mse):
         
     mse = mse / len(label)
     return mse
+<<<<<<< Updated upstream
+=======
+<<<<<<< Updated upstream
+   
+
+
+# In[56]:
+
+def activate_train(lr = 0.01, phase = 'train'):
+    """
+    
+    phase:    can be train/dev/eval
+    """
+    
+    # data and parameter initialization
+    train_data, train_label = get_data(phase) #build the dataset for training network
+    w = 2 * np.random.random(size = 16) - 1
+    b = 0
+    g_w, g_b = 0, 0
+
+    # train the model
+    train_data, train_label = shuffle(train_data, train_label) #shuffle the dataset
+    g_w, g_b = linear_node_gradient(train_data, train_label, w, b, g_w, g_b) #choose the classifier
+    w, b = gradient_descent(w, b, lr, g_w, g_b)
+    
+    return w, b
+    
+>>>>>>> Stashed changes
 
 # In[ ]:
 
@@ -162,6 +222,22 @@ def compute_mse(dev_data, dev_label, w, b):
     Compute the mean square error
     """
     mse = np.array([0.0])
+<<<<<<< Updated upstream
+=======
+    dev_data, dev_label = get_data(phase)
+    w, b = activate_train()
+=======
+
+# In[ ]:
+
+def compute_mse(dev_data, dev_label, w, b):
+    """
+    
+    Compute the mean square error
+    """
+    mse = np.array([0.0])
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
     mse = compute_MSE(dev_data, dev_label, w, b, mse)
     
     return mse
@@ -169,6 +245,49 @@ def compute_mse(dev_data, dev_label, w, b):
 # In[ ]:
 #dev_data, dev_label = get_data('dev')
 #print np.shape(dev_data), np.shape(dev_label)
+<<<<<<< Updated upstream
+
+
+#for i in range(epoch):
+#    #print activate_train()
+#    print activate_dev(w, b)
+=======
+<<<<<<< Updated upstream
+epoch = 5
+for i in range(epoch):
+    print activate_train()
+    print activate_dev()
+>>>>>>> Stashed changes
+
+
+# In[ ]:
+def activate(epoch = 5, lr = 0.01):
+    """
+    
+    """
+    
+    w = 2 * np.random.random(size = 16) - 1
+    b = 0
+    # data and parameter initialization
+    train_data, train_label = get_data('train') #build the dataset for training network
+    dev_data, dev_label = get_data('dev')
+
+    train_data, train_label = shuffle(train_data, train_label) #shuffle the dataset
+    
+    for i in range(epoch):    
+        g_w, g_b = linear_node_gradient(train_data, train_label, w, b) #choose the classifier
+        w, b = gradient_descent(w, b, lr, g_w, g_b)
+    
+        mse = compute_mse(dev_data, dev_label, w, b)
+    
+        print mse
+        print w
+        
+
+<<<<<<< Updated upstream
+# In[ ]:
+=======
+=======
 
 
 #for i in range(epoch):
@@ -197,9 +316,12 @@ def activate(epoch = 5, lr = 0.01):
         mse = compute_mse(dev_data, dev_label, w, b)
     
         print mse
-        print w
-        
+
 
 # In[ ]:
+
+activate()
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
 
 activate()
