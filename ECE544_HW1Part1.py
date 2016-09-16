@@ -96,7 +96,7 @@ def linear_regression_gradient(data, label, weight, b):
         gradient_w += (-2) * (label[i] - (np.dot(weight, data[i]) + b)) * data[i]
         gradient_b += (-2) * (label[i] - (np.dot(weight, data[i]) + b))
 
-    return gradient_w, gradient_b
+    return gradient_w / len(label), gradient_b / len(label)
 
 
 # In[146]:
@@ -148,7 +148,7 @@ def compute_acc(data, label, w, b):
             acc += 1
     return acc / float(len(label))
 # In[157]:
-def activate(epoch = 300, lr = 0.000001):
+def activate(epoch = 2000, lr = 0.01):
     """
     
     """
