@@ -100,8 +100,9 @@ def get_data(set_type):
 # In[15]:
 
 def linear_regression_gradient(data, label, weight, b):
-    """Calculate the gradient of linear node classifier. Return the gradient.
-        learning rate: 1e-5 or 1e-6
+    """
+    Calculate the gradient of linear node classifier. Return the gradient.
+    learning rate: 1e-5 or 1e-6
     """
 
     gradient_w, gradient_b = 0, 0 #Initialize the gradient of w and b
@@ -117,7 +118,7 @@ def linear_regression_gradient(data, label, weight, b):
 def perceptron_gradient(data, label, weight, b = 0):
     """
     Calculate the gradient of perceptron classifier. Return the gradient.
-    
+    learning rate: 1e-2
     """
     
     gradient_w = 0 #Initialize the gradient of weight
@@ -208,7 +209,7 @@ def compute_acc(data, label, w, b):
     
 # In[19]:
 
-def activate(epoch = 6000, lr = 0.001):
+def activate(epoch = 1000, lr = 0.01):
     """
     
     """
@@ -224,15 +225,15 @@ def activate(epoch = 6000, lr = 0.001):
     dev_label = label_edit(dev_label)
     
     for i in range(epoch):    
-        g_w, g_b = svm_gradient(0.001, train_data, train_label, w, b)
+        g_w, g_b = perceptron_gradient(train_data, train_label, w, b)
         w, b = gradient_descent(w, b, lr, g_w, g_b)
     
         mse = compute_mse(dev_data, dev_label, w, b)
         accuracy = compute_acc(dev_data, dev_label, w, b)
         error_rate = 1 - accuracy
         
-        if i % 1000 == 0:
-            print ("epoch: %d, error rate: %f." % (i+1, error_rate))
+        #if i % 1000 == 0:
+        print ("epoch: %d, error rate: %f." % (i+1, error_rate))
         #print mse
         #print g_w
         #print dev_label
