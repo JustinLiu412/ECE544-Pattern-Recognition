@@ -1,11 +1,16 @@
 
 # coding: utf-8
 
+
+#Author: Changsong Dong / Junze(Justin) Liu
+
+
+
 # In[1]:
 
 import numpy as np
 import random
-
+import matplotlib.pyplot as plt
 
 # In[11]:
 
@@ -114,6 +119,21 @@ def linear_regression_gradient(data, label, weight, b):
     return gradient_w, gradient_b
 
 # In[]:
+def logistic_regression_gradient(data, label, weight, b):
+    """Calculate the gradient of logistic regression . Return the gradient
+    
+    """
+    
+    gradient_w, gradient_b = 0, 0
+    for i in range(len(label)):
+        gradient_w += (-2) * ((np.dot(weight, data[i]) + b) - label[i]) * (np.dot(weight, data[i]) + b) * \
+                   (1 - (np.dot(weight, data[i]) + b)) * data[i]
+        gradient_b += (-2) * ((np.dot(weight, data[i]) + b) - label[i]) * (np.dot(weight, data[i]) + b) * \
+                   (1 - (np.dot(weight, data[i]) + b))
+        
+    return gradient_w / len(label), gradient_b / len(label)
+
+# In[]:
 
 def perceptron_gradient(data, label, weight, b = 0):
     """
@@ -140,7 +160,31 @@ def perceptron_gradient(data, label, weight, b = 0):
 #    print np.dot(weight, data[i])
 
 # In[]:
-
+#
+#def svm_gradient(C, data, label, w, b = 0):
+#    """
+#    Calculate the gradient of svm classifier. Return the gradient.
+#    
+#    """
+#    
+#    gradient_w = 0
+#    gradient_b = 0
+#    
+#    for i in range(len(label)):
+##        if label[i] != np.sign(np.dot(w, data[i]) * label[i]) :
+#        if np.dot(w, data[i]) * label[i] < 0 :
+#            gradient_w += C * (-1) * data[i] * label[i]
+#            gradient_b += C * (-1) * label[i]
+#        else:
+#            gradient_w += 0
+#            gradient_b += 0
+#        #print gradient_w
+#            
+#    gradient_w = (2 * w + gradient_w) / len(label)
+#    
+#    #gradient_w = gradient_w / len(label)    
+#    
+#    return gradient_w, gradient_b    
 def svm_gradient(C, data, label, w, b = 0):
     """
     Calculate the gradient of svm classifier. Return the gradient.
@@ -151,7 +195,8 @@ def svm_gradient(C, data, label, w, b = 0):
     gradient_b = 0
     
     for i in range(len(label)):
-        if label[i] != np.sign(np.dot(w, data[i]) * label[i]) :
+        if label[i] * np.dot(w, data[i]) < 1 :
+        # label[i] != np.sign(np.dot(w, data[i]) * label[i]) :
             gradient_w += C * (-1) * data[i] * label[i]
             gradient_b += C * (-1) * label[i]
         else:
@@ -159,11 +204,9 @@ def svm_gradient(C, data, label, w, b = 0):
             gradient_b += 0
         #print gradient_w
             
-    gradient_w = (2 * w + gradient_w) / len(label)
+    gradient_w = (2 * w + gradient_w) #/ len(label) 
     
-    #gradient_w = gradient_w / len(label)    
-    
-    return gradient_w, gradient_b    
+    return gradient_w, gradient_b
         
 # In[16]:
 
@@ -196,7 +239,7 @@ def compute_mse(data, label, w, b):
 # In[]:
 
 def compute_acc(data, label, w, b):
-    """accuracy
+    """Compute the accuracy
     
     """
     
@@ -209,31 +252,91 @@ def compute_acc(data, label, w, b):
     
 # In[19]:
 
-def activate(epoch = 1000, lr = 0.01):
+def activate(epoch = 1000):
     """
     
     """
 
     # data and parameter initialization
-    w = 2 * np.random.random(size = 16) - 1
+ #   w = 2 * np.random.random(size = 16) - 1
+    w_li = 2 * np.random.random(size = 16) - 1
+    w_lo = 2 * np.random.random(size = 16) - 1
+    w_per = 2 * np.random.random(size = 16) - 1
+    w_svm = 2 * np.random.random(size = 16) - 1
     b = 0
-    error_rate = 0
+    b_li = 0
+    b_lo = 0
+    b_per = 0
+    b_svm = 0
+    lr_li = 0.0000001
+    lr_lo = 0.00001
+    lr_per = 0.01
+    lr_svm = 0.00001
+#    accuracy = np.zeros(epoch)
+#    error_rate = np.zeros(epoch)
+#    train_accuracy_li = np.zeros(epoch)
+    train_error_rate_li = np.zeros(epoch)
+#    train_accuracy_lo = np.zeros(epoch)
+    train_error_rate_lo = np.zeros(epoch)
+#    train_accuracy_per = np.zeros(epoch)
+    train_error_rate_per = np.zeros(epoch)
+#    train_accuracy_svm = np.zeros(epoch)
+    train_error_rate_svm = np.zeros(epoch)
+    iteration = np.linspace(0, epoch-1, epoch, endpoint = True)
 
     train_data, train_label = get_data('train') #build the dataset for training network
-    dev_data, dev_label = get_data('dev')
-    train_label = label_edit(train_label)
-    dev_label = label_edit(dev_label)
+    eval_data, eval_label = get_data('eval')
+    train_label_11 = label_edit(train_label)
+    eval_label_11 = label_edit(eval_label)
     
     for i in range(epoch):    
-        g_w, g_b = perceptron_gradient(train_data, train_label, w, b)
-        w, b = gradient_descent(w, b, lr, g_w, g_b)
-    
-        mse = compute_mse(dev_data, dev_label, w, b)
-        accuracy = compute_acc(dev_data, dev_label, w, b)
-        error_rate = 1 - accuracy
+        g_w_li, g_b_li = linear_regression_gradient(train_data, train_label, w_li, b_li)
+        g_w_lo, g_b_lo = logistic_regression_gradient(train_data, train_label, w_lo, b_lo)
+        g_w_per, g_b_per = perceptron_gradient(train_data, train_label_11, w_per, b_per)
+        g_w_svm, g_b_svm = svm_gradient(0.01, train_data, train_label_11, w_svm, b_svm)#perceptron
+        
+        w_li, b_li = gradient_descent(w_li, b, lr_li, g_w_li, g_b_li)
+        w_lo, b_lo = gradient_descent(w_lo, b, lr_lo, g_w_lo, g_b_lo)
+        w_per, b_li_per = gradient_descent(w_per, b, lr_per, g_w_per, g_b_per)
+        w_svm, b_svm = gradient_descent(w_svm, b, lr_svm, g_w_svm, g_b_svm)
+
+#        mse = compute_mse(dev_data, dev_label, w, b)
+#        accuracy[i] = compute_acc(eval_data, eval_label, w, b)
+#        error_rate[i] = 1 - accuracy[i]
+        
+        train_error_rate_li[i] = 1 - compute_acc(train_data, train_label, w_li, b)
+        train_error_rate_lo[i] = 1 - compute_acc(train_data, train_label, w_lo, b)
+        train_error_rate_per[i] = 1 - compute_acc(train_data, train_label_11, w_per, b)
+        train_error_rate_svm[i] = 1 - compute_acc(train_data, train_label_11, w_svm, b)
+        print i
+
+#        print train_error_rate_per[i]
+    print 'li: ',train_error_rate_li[i], ' lo:',train_error_rate_lo[i], 'per:', train_error_rate_per[i]
+#    plt.xlim(0.0,epoch)
+#    plt.ylim(0.0, 1)
+#    
+#    plt.figure(figsize=(20,12), dpi=200)
+#    plt.subplot(2,2,1)
+#    plt.title('Linear Regression')
+#    plt.plot(iteration, train_error_rate_li, linewidth=2.5, linestyle="-")
+#    plt.subplot(2,2,2)
+#    plt.title('Logistic Regression')
+#    plt.plot(iteration, train_error_rate_lo, linewidth=2.5, linestyle="-")
+#    plt.subplot(2,2,3)
+#    plt.title('Perceptron')
+#    plt.plot(iteration, train_error_rate_per, linewidth=2.5, linestyle="-")
+#    plt.subplot(2,2,4)
+#    plt.title('SVM')
+#    plt.plot(iteration, train_error_rate_svm, linewidth=2.5, linestyle="-")
+#    plt.subplot(2,1,2)
+#    plt.plot(iteration, error_rate)
+
+        
+#        print accuracy
+#        print error_rate
         
         #if i % 1000 == 0:
-        print ("epoch: %d, error rate: %f." % (i+1, error_rate))
+        #print ("epoch: %d, error rate: %f." % (i+1, error_rate))
         #print mse
         #print g_w
         #print dev_label

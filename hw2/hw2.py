@@ -13,16 +13,16 @@ def nan_check(data, label):
     
     """
     
-    nan_rows = np.array(0); #define an array containg the no. of rows having 'nan'
+    nan_rows = np.array(0); # define an array containg the no. of rows having 'nan'
     
-    #collect all the numbers of 'nan'-data rows
+    # collect all the numbers of 'nan'-data rows
     for i in range(len(data)):
         for j in range(16):
             if str(data[i][j]) == 'nan':
                 nan_rows = np.append(nan_rows, i)
-    nan_rows = np.delete(nan_rows, 0) #delete the first element of nan_rows which was made to fit the append()
+    nan_rows = np.delete(nan_rows, 0) # delete the first element of nan_rows which was made to fit the append()
     
-    #output the dataset whose 'nan'-data rows have been deleted
+    # output the dataset whose 'nan'-data rows have been deleted
     return np.delete(data, nan_rows, 0), np.delete(label, nan_rows, 0)
     
 def label_edit(label):
